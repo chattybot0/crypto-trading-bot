@@ -1,79 +1,19 @@
-const ccxt = require('ccxt');
-const axios = require('axios');
-const snooze = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-
-tick = async (config, binanceClient) => {
-	console.clear();
-	const allocation = config.allocation;
-	const asset = config.asset;
-	const base = config.base;
-	const spread = config.spread;
-	const tickInterval = config.tickInterval;
-	const market = `${asset}/${base}`;
-
-	const orders = await binanceClient.fetchOpenOrders(market);
-	orders.forEach(async order => {
-		await binanceClient.cancelOrder(order.id);
-	});
-
-	const results = await Promise.all([
-		axios.get('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'),
-		axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd')
-	]);
-	const marketPrice = results[0].data.bitcoin.usd / results[1].data.tether.usd;
-
-	const sellPrice = marketPrice * (1 + spread);
-	const buyPrice = marketPrice * (1 - spread);
-	const balances = await binanceClient.fetchBalance();
-	const assetBalance = balances.free[asset];
-	const baseBalance = balances.free[base];
-	const sellVolume = assetBalance * allocation;
-	const buyVolume = (baseBalance * allocation) / marketPrice;
-
-	console.log(`sellPrice: ${sellPrice}
-buyPrice: ${buyPrice}
-assetBalance: ${assetBalance}
-baseBalance: ${baseBalance}
-sellVolume: ${sellVolume}
-buyVolume: ${buyVolume}
-	
-	
-	`);
-
-	try {
-		await binanceClient.createLimitSellOrder(market, sellVolume, sellPrice);
-		await binanceClient.createLimitBuyOrder(market, buyVolume, buyPrice);
-		console.log(`
-New tick for ${market}...
-Create limit sell order for ${sellVolume}@${sellPrice}
-Create limit buy order for ${buyVolume}@${buyPrice}
-Success!
-Sleeping the thread for the specified time...
-`);
-		await snooze(tickInterval);
-	}
-	catch (err) {
-		console.log("Hmmm... We couldn't send a successfull request. The thread will sleep 5 seconds to recover the error...\n" + err);
-		await snooze(5000);
-	}
-	console.log("Reloading the tick...");
-	await snooze(500);
-	tick(config, binanceClient);
+/* Here we initialize the bot constructor */
+const TradeBot = require("./traderbot.js");
+ 
+/* This is the bot configuration, read carefully how to use. */
+const configuration = {
+    /* The asset defines what currency the bot should buy*/
+    asset: 'BTC',
+    /* Since the bot uses the binance API, you cannot trade to Dollar or a fiat, so we trade to USDT or Tether, which is roughly 1 dollar.*/
+    base: 'USDT',
+    /* Allocation says how much of the remained money should be used for a tick, 0.1 is the best option. */
+    allocation: 0.1,
+    /* Spread defines how much the error percentage should be */
+    spread: 0.2,
+    /* For binance, the tick interval should be more than 2 seconds or 2000 miliseconds, so 2500 is the best option. */
+    tickInterval: 2500
 };
-
-const run = (config) => {
-	const binanceClient = new ccxt.binance({
-		apiKey: process.env.API_KEY,
-		secret: process.env.API_SECRET
-	});
-
-	tick(config, binanceClient);
-};
-
-const start = (apiKey,apiSecret,config) => {
-	console.log("Initializing the bot...");
-	run(config);
-}
-
-module.exports = {start};
+ 
+/* Here we give the bot the API key, the API secret, and the configuration. You could register for the API at binance.com */
+TradeBot.start(process.env.API_KEY, process.env.API_SECRET, configuration);

@@ -1,10 +1,15 @@
 # Crypto Trading Bot
 Simple bitcoin trading bot made with nodejs
+
+Installation:
+Run this in your shell:
+`https://github.com/chattybot0/crypto-trading-bot`
+
 This is an example on how to use:
 
 ```JS
 /* Here we initialize the bot constructor */
-const TradeBot = require("./bot.js");
+const TradeBot = require("./traderbot.js");
 
 /* This is the bot configuration, read carefully how to use. */
 const configuration = {
