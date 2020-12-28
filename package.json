@@ -1,5 +1,5 @@
 {
-  "name": "crypto-trading-bot",
+  "name": "TraderBot",
   "version": "1.0.0",
   "description": "A cryptocurrency trading bot, which automatically trades cryptocurrency and makes money.",
   "main": "index.js",
@@ -14,7 +14,6 @@
   "dependencies": {
     "axios": "^0.21.1",
     "ccxt": "^1.39.79",
-    "gdax": "^0.9.0",
     "ms": "^2.1.3"
   }
 }

@@ -3,7 +3,7 @@ Simple bitcoin trading bot made with nodejs
 
 Installation:
 Run this in your shell:
-`https://github.com/chattybot0/crypto-trading-bot`
+`curl -O "https://raw.githubusercontent.com/chattybot0/crypto-trading-bot/master/traderbot.js"; npm install axios; npm install ccxt; npm install ms`
 
 This is an example on how to use:
 
