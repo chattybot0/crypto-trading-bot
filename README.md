@@ -1,5 +1,6 @@
 # Crypto Trading Bot
 Simple bitcoin trading bot made with nodejs
+Made by mforoud86
 
 Installation:
 Run this in your shell:
