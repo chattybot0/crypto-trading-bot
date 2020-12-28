@@ -62,14 +62,7 @@ Sleeping the thread for the specified time...
 	tick(config, binanceClient);
 };
 
-const run = () => {
-	const config = {
-		asset: 'BTC',
-		base: 'USDT',
-		allocation: 0.1,
-		spread: 0.2,
-		tickInterval: 2500
-	};
+const run = (config) => {
 	const binanceClient = new ccxt.binance({
 		apiKey: process.env.API_KEY,
 		secret: process.env.API_SECRET
@@ -78,9 +71,9 @@ const run = () => {
 	tick(config, binanceClient);
 };
 
-const start = (apiKey,apiSecret) => {
+const start = (apiKey,apiSecret,config) => {
 	console.log("Initializing the bot...");
-	run();
+	run(config);
 }
 
 module.exports = {start};
