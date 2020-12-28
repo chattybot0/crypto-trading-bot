@@ -2,7 +2,7 @@
 Simple bitcoin trading bot made with nodejs
 This is an example on how to use:
 
-```
+```JS
 /* Here we initialize the bot constructor */
 const TradeBot = require("./bot.js");
 
